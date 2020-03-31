@@ -13,13 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Kibana
-        id: checkout_kibana
         uses: actions/checkout@v2
         with:
           repository: opendistro-for-elasticsearch/kibana-oss
           ref: 7.6.1
           token: ${{ secrets.GITHUB_KIBANA_OSS }}
           path: kibana
+      - name: Get node version
+        id: node_version_step
         run: |
           node_version=`node -p "require('./package.json').engines.node"`
           echo $node_version
@@ -27,7 +28,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ steps.checkout_kibana.outputs.node_version }}
+          node-version: ${{ steps.node_version_step.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Install correct yarn version for Kibana
         run: |
