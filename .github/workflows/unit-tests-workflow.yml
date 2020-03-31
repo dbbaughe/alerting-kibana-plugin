@@ -22,9 +22,11 @@ jobs:
       - name: Get node version
         id: node_version_step
         run: |
-          node_version=`node -p "require('kibana/package.json').engines.node"`
+          pwd
+          ls
+          node_version=`node -p "require('./kibana/package.json').engines.node"`
           echo $node_version
-          echo "::set-output name=node_version::$(node -p "require('kibana/package.json').engines.node")"
+          echo "::set-output name=node_version::$(node -p "require('./kibana/package.json').engines.node")"
       - name: Setup node
         uses: actions/setup-node@v1
         with:
