@@ -1,0 +1,42 @@
+name: Unit tests workflow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Kibana
+        uses: actions/checkout@v2
+        with:
+          repository: opendistro-for-elasticsearch/kibana-oss
+          ref: 7.6.1
+          token: ${{ secrets.GITHUB_KIBANA_OSS }}
+          path: kibana
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.19.0'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install correct yarn version for Kibana
+        run: |
+          npm uninstall -g yarn
+          npm i -g yarn@1.21.1
+      - name: Checkout Alerting Kibana plugin
+        uses: actions/checkout@v2
+        with:
+          path: kibana/plugins/alerting-kibana-plugin
+      - name: Bootstrap plugin/kibana
+        run: |
+          cd kibana/plugins/alerting-kibana-plugin
+          yarn kbn bootstrap
+      - name: Run tests
+        run: |
+          cd kibana/plugins/alerting-kibana-plugin
+          yarn run test:jest
