@@ -32,7 +32,8 @@ jobs:
       - name: Install correct yarn version for Kibana
         run: |
           npm uninstall -g yarn
-          npm i -g yarn@${{ steps.versions_set.outputs.yarn_version }}
+          echo "Installing yarn ${{ steps.versions_step.outputs.yarn_version }}"
+          npm i -g yarn@${{ steps.versions_step.outputs.yarn_version }}
       - name: Checkout Alerting Kibana plugin
         uses: actions/checkout@v2
         with:
